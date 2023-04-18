@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author edwajohn
  */
-public class CompoundStatement implements Statement {
+public class CompoundStatement extends AbstractNode implements Statement {
 
   private final List<Statement> statements;
 

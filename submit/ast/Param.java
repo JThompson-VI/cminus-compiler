@@ -8,7 +8,7 @@ package submit.ast;
  *
  * @author edwajohn
  */
-public class Param implements Node {
+public class Param extends AbstractNode implements Node {
 
   private final VarType type;
   private final String id;

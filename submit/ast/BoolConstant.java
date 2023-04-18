@@ -8,7 +8,7 @@ package submit.ast;
  *
  * @author edwajohn
  */
-public class BoolConstant implements Expression {
+public class BoolConstant extends AbstractNode implements Expression {
 
   private final boolean value;
 

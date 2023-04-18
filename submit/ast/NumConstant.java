@@ -8,7 +8,7 @@ package submit.ast;
  *
  * @author edwajohn
  */
-public class NumConstant implements Expression, Node {
+public class NumConstant extends AbstractNode implements Expression, Node {
 
   private final int value;
 

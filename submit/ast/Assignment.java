@@ -8,7 +8,7 @@ package submit.ast;
  *
  * @author edwajohn
  */
-public class Assignment implements Expression, Node {
+public class Assignment extends AbstractNode implements Expression, Node {
 
   private final Mutable mutable;
   private final AssignmentType type;

@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author edwajohn
  */
-public class Call implements Expression {
+public class Call extends AbstractNode implements Expression {
 
   private final String id;
   private final List<Expression> args;

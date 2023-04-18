@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author edwajohn
  */
-public class Program implements Node {
+public class Program extends AbstractNode implements Node {
 
   private ArrayList<Declaration> declarations;
 

@@ -8,7 +8,7 @@ package submit.ast;
  *
  * @author edwajohn
  */
-public class Return implements Statement {
+public class Return extends AbstractNode implements Statement {
 
   private final Expression expr;
 

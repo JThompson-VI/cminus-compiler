@@ -8,7 +8,7 @@ package submit.ast;
  *
  * @author edwajohn
  */
-public class StringConstant implements Expression {
+public class StringConstant extends AbstractNode implements Expression {
 
   private final String value;
 

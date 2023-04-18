@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author edwajohn
  */
-public class FunDeclaration implements Declaration, Node {
+public class FunDeclaration extends AbstractNode implements Declaration, Node {
 
   private final VarType returnType;
   private final String id;

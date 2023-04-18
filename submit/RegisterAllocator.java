@@ -20,6 +20,7 @@ public final class RegisterAllocator {
     private final boolean[] s = new boolean[8];
     private final Set<String> used = new HashSet<>();
 
+
     public RegisterAllocator() {
         clearAll();
     }
@@ -36,20 +37,29 @@ public final class RegisterAllocator {
         return null;
     }
 
-    public String getS() {
-        for (int i = 0; i < s.length; ++i) {
-            if (!s[i]) {
-                s[i] = true;
-                String str = "$s" + i;
-                used.add(str);
-                return str;
-            }
-        }
-        return null;
-    }
+//    public String getS() {
+//        for (int i = 0; i < s.length; ++i) {
+//            if (!s[i]) {
+//                s[i] = true;
+//                String str = "$s" + i;
+//                used.add(str);
+//                return str;
+//            }
+//        }
+//        return null;
+//    }
 
-    // Returns the number of bytes used to save the registers
-    public int saveRestore(StringBuilder code, int baseOffset, boolean s_or_t, boolean save) {
+    /**
+     * saves values in all active registers to stack and returns offset
+     * can also restore all active registers from stack
+     *
+     * @param code empty string builder
+     * @param baseOffset sp base offset
+     * @param s_or_t is the register an s register
+     * @param save if true instruction is sw else lw
+     * Returns the number of bytes used to save the registers
+     */
+    private int saveRestore(StringBuilder code, int baseOffset, boolean s_or_t, boolean save) {
         boolean[] r = s;
         String prefix = "$s";
         if (!s_or_t) {
@@ -62,7 +72,7 @@ public final class RegisterAllocator {
         }
         int offset = 0;
         for (int i = 0; i < r.length; ++i) {
-            if (r[i]) {
+            if (r[i]) { // if the register is being used
                 offset -= 4;
                 String str = prefix + i;
                 code.append(instruction).append(" ").append(str).append(" ").append(offset-baseOffset).append("($sp)\n");
