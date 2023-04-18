@@ -16,14 +16,18 @@ public class SymbolTable {
   private final HashMap<String, SymbolInfo> table;
   private SymbolTable parent;
   private final List<SymbolTable> children;
+  private int activationRecordSize;
 
   public SymbolTable() {
     table = new HashMap<>();
     parent = null;
     children = new ArrayList<>();
   }
+  public int getARSize() { return this.activationRecordSize; }
 
   public void addSymbol(String id, SymbolInfo symbol) {
+    activationRecordSize++; // TODO: 4/18/23 this assumes all values are one word.
+    symbol.setOffset(activationRecordSize * -4);
     table.put(id, symbol);
   }
 
