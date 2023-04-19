@@ -17,18 +17,28 @@ public class SymbolTable {
   private SymbolTable parent;
   private final List<SymbolTable> children;
   private int activationRecordSize;
+  private static int dataLabelNumber = 0;
 
   public SymbolTable() {
     table = new HashMap<>();
     parent = null;
     children = new ArrayList<>();
+    this.addSymbol("println", new SymbolInfo("println"));
   }
   public int getARSize() { return this.activationRecordSize; }
 
   public void addSymbol(String id, SymbolInfo symbol) {
-    activationRecordSize++; // TODO: 4/18/23 this assumes all values are one word.
-    symbol.setOffset(activationRecordSize * -4);
+    if (!symbol.isFunction()){
+      activationRecordSize++; // TODO: 4/18/23 this assumes all values are one word.
+      symbol.setOffset(activationRecordSize * -4);
+    }
     table.put(id, symbol);
+  }
+
+  public String generateDataLabel() {
+    String label = String.format("datalabel%d", dataLabelNumber);
+    dataLabelNumber++;
+    return label;
   }
 
   /**

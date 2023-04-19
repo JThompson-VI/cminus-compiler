@@ -4,6 +4,10 @@
  */
 package submit.ast;
 
+import submit.MIPSResult;
+import submit.RegisterAllocator;
+import submit.SymbolTable;
+
 /**
  *
  * @author edwajohn
@@ -20,4 +24,15 @@ public class StringConstant extends AbstractNode implements Expression {
     builder.append("\"").append(value).append("\"");
   }
 
+  @Override
+  public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
+    /*
+    * create data label
+    * [new label from symboltabl]: \t.asciiz "this.value"
+    * */
+    String dataLabel = symbolTable.generateDataLabel();
+    data.append(dataLabel).append(":\t").append(".asciiz ").append(value).append("\n");
+
+    return MIPSResult.createAddressResult(dataLabel, VarType.CHAR);
+  }
 }

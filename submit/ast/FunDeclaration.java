@@ -4,6 +4,10 @@
  */
 package submit.ast;
 
+import submit.MIPSResult;
+import submit.RegisterAllocator;
+import submit.SymbolTable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,4 +47,15 @@ public class FunDeclaration extends AbstractNode implements Declaration, Node {
     statement.toCminus(builder, prefix);
   }
 
+  @Override
+  public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
+    symbolTable = symbolTable.createChild(); // give function declarations their own stack frame
+    code.append(this.id).append(":\n");
+    // todo: set params in current activation record
+    for (Param param : params) {
+      param.toMIPS(code, data, symbolTable, regAllocator);
+    }
+    statement.toMIPS(code, data, symbolTable, regAllocator);
+    return MIPSResult.createVoidResult();
+  }
 }

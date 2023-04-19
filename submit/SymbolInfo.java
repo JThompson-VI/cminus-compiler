@@ -24,12 +24,23 @@ public class SymbolInfo {
     this.function = function;
   }
 
+  // for void functions
+  public SymbolInfo(String id){
+    this.id = id;
+    this.type = null;
+    this.function = true;
+  }
+
   public int getOffset() {
     return offset;
   }
 
   public void setOffset(int offset) {
     this.offset = offset;
+  }
+
+  public boolean isFunction() {
+    return function;
   }
 
   @Override
