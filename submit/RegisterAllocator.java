@@ -52,20 +52,14 @@ public final class RegisterAllocator {
     /**
      * saves values in all active registers to stack and returns offset
      * can also restore all active registers from stack
-     *
+     * Returns the number of bytes used to save the registers
      * @param code empty string builder
      * @param baseOffset sp base offset
-     * @param s_or_t is the register an s register
      * @param save if true instruction is sw else lw
-     * Returns the number of bytes used to save the registers
      */
-    private int saveRestore(StringBuilder code, int baseOffset, boolean s_or_t, boolean save) {
-        boolean[] r = s;
-        String prefix = "$s";
-        if (!s_or_t) {
-            r = t;
-            prefix = "$t";
-        }
+    private int saveRestore(StringBuilder code, int baseOffset, boolean save) {
+        boolean[] r = t;
+        String prefix = "$t";
         String instruction = "sw";
         if (!save) {
             instruction = "lw";
@@ -86,7 +80,7 @@ public final class RegisterAllocator {
 //    }
 
     public int saveT(StringBuilder code, int baseOffset) {
-        return saveRestore(code, baseOffset, false, true);
+        return saveRestore(code, baseOffset, true);
     }
 
 //    public int restoreS(StringBuilder code, int baseOffset) {
@@ -94,7 +88,7 @@ public final class RegisterAllocator {
 //    }
 
     public int restoreT(StringBuilder code, int baseOffset) {
-        return saveRestore(code, baseOffset, false, false);
+        return saveRestore(code, baseOffset, false);
     }
 
     public List<String> getUsed() {
