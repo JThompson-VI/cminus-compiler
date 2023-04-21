@@ -27,10 +27,14 @@ public class SymbolTable {
   }
   public int getARSize() { return this.activationRecordSize; }
 
+  public HashMap<String, SymbolInfo> getTable() {
+    return table;
+  }
+
   public void addSymbol(String id, SymbolInfo symbol) {
     if (!symbol.isFunction()){
-      activationRecordSize++; // TODO: 4/18/23 this assumes all values are one word.
-      symbol.setOffset(activationRecordSize * -4);
+      activationRecordSize = activationRecordSize + 4;
+      symbol.setOffset(activationRecordSize * -1);
     }
     table.put(id, symbol);
   }
@@ -48,7 +52,7 @@ public class SymbolTable {
    * @param id
    * @return
    */
-  public SymbolInfo find(String id) {
+  public SymbolInfo find(String id) { // TODO: 4/21/23 deal with offset if symbol in parent table
     if (table.containsKey(id)) {
       return table.get(id);
     }

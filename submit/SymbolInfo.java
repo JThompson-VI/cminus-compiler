@@ -31,6 +31,10 @@ public class SymbolInfo {
     this.function = true;
   }
 
+  public VarType getType() {
+    return type;
+  }
+
   public int getOffset() {
     return offset;
   }

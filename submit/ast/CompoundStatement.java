@@ -17,9 +17,16 @@ import java.util.List;
 public class CompoundStatement extends AbstractNode implements Statement {
 
   private final List<Statement> statements;
+  private final SymbolTable localSymbolTable;
 
   public CompoundStatement(List<Statement> statements) {
     this.statements = statements;
+    this.localSymbolTable = null; // TODO: 4/20/23 this is definitely not right
+  }
+
+  public CompoundStatement(List<Statement> statements, SymbolTable symbolTable) {
+    this.statements = statements;
+    this.localSymbolTable = symbolTable;
   }
 
   @Override
@@ -33,8 +40,16 @@ public class CompoundStatement extends AbstractNode implements Statement {
 
   @Override
   public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
+    code.append("# Entering a new scope\n");
+    if (localSymbolTable == null) {
+      return MIPSResult.createVoidResult();
+    }
+    for (String key: localSymbolTable.getTable().keySet()) {
+      code.append(String.format("# %s\n", key));
+    }
+    // todo: reset the stack pointer?
     for (Statement s : statements) {
-      s.toMIPS(code, data, symbolTable, regAllocator);
+      s.toMIPS(code, data, localSymbolTable, regAllocator);
     }
 
     return MIPSResult.createVoidResult();

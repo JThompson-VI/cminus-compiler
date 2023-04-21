@@ -39,24 +39,38 @@ public class BinaryOperator extends AbstractNode implements Expression {
   @Override
   public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
     // TODO: 4/19/23 currently only dealing with +, -, *, /
+
     MIPSResult lhsMips = lhs.toMIPS(code, data, symbolTable, regAllocator);
+    String lhsReg = lhsMips.getRegister();
+    // if lhs is a variable load value to reg
+    if (lhsMips.getAddress() != null) {
+      code.append(String.format("lw %s 0(%s)\n", lhsMips.getAddress(), lhsMips.getAddress()));
+      lhsReg = lhsMips.getAddress();
+    }
     MIPSResult rhsMips = rhs.toMIPS(code, data, symbolTable, regAllocator);
+    String rhsReg = rhsMips.getRegister();
+    // if rhs is a variable load value to reg
+    if (rhsMips.getAddress() != null) {
+      code.append(String.format("lw %s 0(%s)\n", rhsMips.getAddress(), rhsMips.getAddress()));
+      rhsReg = rhsMips.getAddress();
+    }
+
     if (type == BinaryOperatorType.PLUS || type == BinaryOperatorType.MINUS) {
       code.append(String.format("%s %s %s %s\n",
               type == BinaryOperatorType.MINUS ? "sub" : "add",
-              lhsMips.getRegister(),
-              lhsMips.getRegister(),
-              rhsMips.getRegister()));
-      regAllocator.clear(rhsMips.getRegister());
-      return MIPSResult.createRegisterResult(lhsMips.getRegister(), VarType.INT);
+              lhsReg,
+              lhsReg,
+              rhsReg));
+      regAllocator.clear(rhsReg);
+      return MIPSResult.createRegisterResult(lhsReg, VarType.INT);
     } else if (type == BinaryOperatorType.DIVIDE || type == BinaryOperatorType.TIMES) {
       code.append(String.format("%s %s %s\n",
                       type == BinaryOperatorType.DIVIDE ? "div" : "mult",
-                      lhsMips.getRegister(),
-                      rhsMips.getRegister()))
-              .append(String.format("mflo %s\n", lhsMips.getRegister()));
-      regAllocator.clear(rhsMips.getRegister());
-      return MIPSResult.createRegisterResult(lhsMips.getRegister(), VarType.INT);
+                      lhsReg,
+                      rhsReg))
+              .append(String.format("mflo %s\n", lhsReg));
+      regAllocator.clear(rhsReg);
+      return MIPSResult.createRegisterResult(lhsReg, VarType.INT);
     }
     System.err.println("Need to implement more binary operators");
     return super.toMIPS(code, data, symbolTable, regAllocator);
