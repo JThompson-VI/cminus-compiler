@@ -57,7 +57,22 @@ public class SymbolTable {
       return table.get(id);
     }
     if (parent != null) {
-      return parent.find(id);
+      return parent.findInParentSymbolTable(id, parent.getARSize());
+    }
+    return null;
+  }
+
+  private SymbolInfo findInParentSymbolTable(String id, int baseOffset) {
+    if (table.containsKey(id)) {
+      SymbolInfo target = table.get(id);
+      SymbolInfo symbolWithUpdatedOffset = new SymbolInfo(id, target.getType(), target.isFunction());
+      if (!target.isFunction()) {
+        symbolWithUpdatedOffset.setOffset(target.getOffset() + baseOffset);
+      }
+      return symbolWithUpdatedOffset;
+    }
+    if (parent != null) {
+      return parent.findInParentSymbolTable(id, baseOffset + parent.getARSize());
     }
     return null;
   }
