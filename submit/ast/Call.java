@@ -44,6 +44,32 @@ public class Call extends AbstractNode implements Expression {
     if (id.equals("println")){
       return toMipsPrintln(code, data, symbolTable, regAllocator);
     }
+    code.append(String.format("# calling function %s\n", id));
+    code.append("# store ra\n");
+    String raReg = regAllocator.getT();
+    if (raReg == null) {
+      System.err.println("no regs available for ra in call");
+    }
+    code.append(String.format("move %s $ra\n", raReg));
+
+    code.append("# store t registers\n");
+    int regOffset = regAllocator.saveT(code, symbolTable.getARSize());
+
+    code.append("# update stack pointer\n");
+    code.append(String.format("addi $sp $sp %d\n", -regOffset - symbolTable.getARSize()));
+
+    code.append("# call the function\n");
+    code.append(String.format("jal %s\n", id));
+
+    code.append("# restore stack pointer\n");
+    code.append(String.format("addi $sp $sp %d\n", regOffset + symbolTable.getARSize()));
+
+    code.append("# restore t regs\n");
+    regAllocator.restoreT(code, symbolTable.getARSize());
+
+    regAllocator.clear(raReg);
+    code.append("# restore ra\n");
+    code.append(String.format("move $ra %s\n", raReg));
     // get the type of the arg to determine which print syscall to use
     return MIPSResult.createVoidResult(); // TODO: 4/18/23 come back here
   }

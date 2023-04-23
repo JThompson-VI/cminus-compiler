@@ -55,6 +55,9 @@ public class FunDeclaration extends AbstractNode implements Declaration, Node {
       param.toMIPS(code, data, symbolTable, regAllocator);
     }
     statement.toMIPS(code, data, symbolTable, regAllocator);
+    if (!this.id.equals("main")){
+      code.append("jr $ra\n");
+    }
     return MIPSResult.createVoidResult();
   }
 }
