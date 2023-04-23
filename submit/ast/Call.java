@@ -58,6 +58,20 @@ public class Call extends AbstractNode implements Expression {
     code.append("# update stack pointer\n");
     code.append(String.format("addi $sp $sp %d\n", -regOffset - symbolTable.getARSize()));
 
+    code.append("# place args on the stack\n");
+    int offset = -4;
+    for (Expression arg : args) {
+      MIPSResult argMips = arg.toMIPS(code, data, symbolTable, regAllocator);
+      String argReg = argMips.getRegister();
+      // this is for dealing with variables being passed as expressions
+      if (argMips.getAddress() != null) {
+        code.append(String.format("lw %s 0(%s)\n", argMips.getAddress(), argMips.getAddress()));
+        argReg = argMips.getAddress();
+      }
+      code.append(String.format("sw %s %d($sp)\n", argReg, offset));
+      regAllocator.clear(argReg);
+      offset = offset - 4;
+    }
     code.append("# call the function\n");
     code.append(String.format("jal %s\n", id));
 

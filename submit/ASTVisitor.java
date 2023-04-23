@@ -65,15 +65,19 @@ public class ASTVisitor extends CminusBaseVisitor<Node> {
         for (CminusParser.ParamContext p : ctx.param()) {
             params.add((Param) visitParam(p));
         }
-        Statement statement = (Statement) visitStatement(ctx.statement());
+        CompoundStatement compoundStatement = (CompoundStatement) visitStatement(ctx.statement());
+
+        if (!params.isEmpty()) {
+            compoundStatement.addParams(params);
+        }
         symbolTable.addSymbol(id, new SymbolInfo(id, returnType, true));
-        return new FunDeclaration(returnType, id, params, statement);
+        return new FunDeclaration(returnType, id, params, compoundStatement);
     }
 
     @Override public Node visitParam(CminusParser.ParamContext ctx) {
         VarType type = getVarType(ctx.typeSpecifier());
         String id = ctx.paramId().ID().getText();
-        symbolTable.addSymbol(id, new SymbolInfo(id, type, false));
+        symbolTable.addSymbol(id, new SymbolInfo(id, type, true));
         return new Param(type, id, ctx.paramId().children.size() > 1);
     }
 
