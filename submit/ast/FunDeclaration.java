@@ -49,14 +49,12 @@ public class FunDeclaration extends AbstractNode implements Declaration, Node {
 
   @Override
   public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
-    SymbolTable localSymbolTable = symbolTable.createChild(); // give function declarations their own stack frame
     code.append(String.format("#code for %s\n", this.id));
     code.append(this.id).append(":\n");
-    // todo: set params in current activation record
     for (Param param : params) {
-      param.toMIPS(code, data, localSymbolTable, regAllocator);
+      param.toMIPS(code, data, symbolTable, regAllocator);
     }
-    statement.toMIPS(code, data, localSymbolTable, regAllocator);
+    statement.toMIPS(code, data, symbolTable, regAllocator);
     return MIPSResult.createVoidResult();
   }
 }
