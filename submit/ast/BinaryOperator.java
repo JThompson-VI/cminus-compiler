@@ -42,18 +42,8 @@ public class BinaryOperator extends AbstractNode implements Expression {
 
     MIPSResult lhsMips = lhs.toMIPS(code, data, symbolTable, regAllocator);
     String lhsReg = lhsMips.getRegister();
-    // if lhs is a variable load value to reg
-    if (lhsMips.getAddress() != null) {
-      code.append(String.format("lw %s 0(%s)\n", lhsMips.getAddress(), lhsMips.getAddress()));
-      lhsReg = lhsMips.getAddress();
-    }
     MIPSResult rhsMips = rhs.toMIPS(code, data, symbolTable, regAllocator);
     String rhsReg = rhsMips.getRegister();
-    // if rhs is a variable load value to reg
-    if (rhsMips.getAddress() != null) {
-      code.append(String.format("lw %s 0(%s)\n", rhsMips.getAddress(), rhsMips.getAddress()));
-      rhsReg = rhsMips.getAddress();
-    }
 
     if (type == BinaryOperatorType.PLUS || type == BinaryOperatorType.MINUS) {
       code.append(String.format("%s %s %s %s\n",

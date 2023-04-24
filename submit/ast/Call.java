@@ -63,11 +63,7 @@ public class Call extends AbstractNode implements Expression {
     for (Expression arg : args) {
       MIPSResult argMips = arg.toMIPS(code, data, symbolTable, regAllocator);
       String argReg = argMips.getRegister();
-      // this is for dealing with variables being passed as expressions
-      if (argMips.getAddress() != null) {
-        code.append(String.format("lw %s 0(%s)\n", argMips.getAddress(), argMips.getAddress()));
-        argReg = argMips.getAddress();
-      }
+
       code.append(String.format("sw %s %d($sp)\n", argReg, offset));
       regAllocator.clear(argReg);
       offset = offset - 4;
@@ -84,6 +80,7 @@ public class Call extends AbstractNode implements Expression {
     regAllocator.clear(raReg);
     code.append("# restore ra\n");
     code.append(String.format("move $ra %s\n", raReg));
+
     // get the type of the arg to determine which print syscall to use
     return MIPSResult.createVoidResult(); // TODO: 4/18/23 come back here
   }

@@ -23,6 +23,10 @@ public class Mutable extends AbstractNode implements Expression, Node {
     this.index = index;
   }
 
+  public String getId() {
+    return id;
+  }
+
   @Override
   public void toCminus(StringBuilder builder, String prefix) {
     builder.append(id);
@@ -48,7 +52,9 @@ public class Mutable extends AbstractNode implements Expression, Node {
 
     code.append("# load offset + sp to get the address of ").append(id).append("\n");
     code.append(String.format("add %s $sp %s\n", reg, reg));
+    code.append(String.format("# load the value of %s\n", id));
+    code.append(String.format("lw %s 0(%s)\n", reg, reg));
 
-    return MIPSResult.createAddressResult(reg, symbolInfo.getType()); // TODO: 4/21/23 do I return type of symbol or type of contents of reg
+    return MIPSResult.createRegisterResult(reg, symbolInfo.getType());
   }
 }
