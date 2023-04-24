@@ -48,7 +48,7 @@ public class CompoundStatement extends AbstractNode implements Statement {
     for (String key: localSymbolTable.getTable().keySet()) {
       code.append(String.format("# %s\n", key));
     }
-    code.append("# update the stack pointer\n");
+    code.append("# Update the stack pointer\n");
     code.append(String.format("addi $sp $sp -%d\n", symbolTable.getARSize()));
     for (Statement s : statements) {
       s.toMIPS(code, data, localSymbolTable, regAllocator);
