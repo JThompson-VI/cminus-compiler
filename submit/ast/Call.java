@@ -86,7 +86,6 @@ public class Call extends AbstractNode implements Expression {
       int offsetOfReturn = -regOffset - symbolTable.getARSize() + args.size() * -4 - 4;
       String returnReg = regAllocator.getT();
       code.append(String.format("lw %s %d($sp)\n", returnReg, offsetOfReturn));
-      regAllocator.clear(returnReg);
       return MIPSResult.createRegisterResult(returnReg, symbolTable.find(id).getType());
     }
     return MIPSResult.createVoidResult();

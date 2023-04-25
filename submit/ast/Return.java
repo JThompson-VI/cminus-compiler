@@ -43,6 +43,7 @@ public class Return extends AbstractNode implements Statement {
     // place offset in reg
     code.append("# store the return value on the stack\n");
     code.append(String.format("sw %s %d($sp)\n", reg, offset));
+    code.append("jr $ra\n");
     regAllocator.clear(reg);
     return MIPSResult.createVoidResult();
   }

@@ -61,8 +61,31 @@ public class BinaryOperator extends AbstractNode implements Expression {
               .append(String.format("mflo %s\n", lhsReg));
       regAllocator.clear(rhsReg);
       return MIPSResult.createRegisterResult(lhsReg, VarType.INT);
+    } else if (type == BinaryOperatorType.LT) {
+      code.append(String.format("slt %s %s %s\n", lhsReg, lhsReg, rhsReg));
+      regAllocator.clear(rhsReg);
+      return MIPSResult.createRegisterResult(lhsReg, VarType.BOOL);
+    } else if (type == BinaryOperatorType.GT) {
+      code.append(String.format("slt %s %s %s\n", lhsReg, rhsReg, lhsReg));
+      regAllocator.clear(rhsReg);
+      return MIPSResult.createRegisterResult(lhsReg, VarType.BOOL);
+    } else if (type == BinaryOperatorType.LE) {
+      code.append(String.format("slt %s %s %s\n", lhsReg, rhsReg, lhsReg));
+      code.append(String.format("subi %s %s 1\n", lhsReg, lhsReg));
+      regAllocator.clear(rhsReg);
+      return MIPSResult.createRegisterResult(lhsReg, VarType.BOOL);
+    } else if (type == BinaryOperatorType.GE) {
+      code.append(String.format("slt %s %s %s\n", lhsReg, lhsReg, rhsReg));
+      code.append(String.format("subi %s %s 1\n", lhsReg, lhsReg));
+      regAllocator.clear(rhsReg);
+      return MIPSResult.createRegisterResult(lhsReg, VarType.BOOL);
+    } else if (type == BinaryOperatorType.EQ) {
+      code.append(String.format("xor %s %s %s\n", lhsReg, lhsReg, rhsReg));
+      code.append(String.format("slti %s %s 1\n", lhsReg, lhsReg));
+      regAllocator.clear(rhsReg);
+      return MIPSResult.createRegisterResult(lhsReg, VarType.BOOL);
     }
-    System.err.println("Need to implement more binary operators");
+    System.out.println("Need to implement more binary operators: " + type.toString());
     return super.toMIPS(code, data, symbolTable, regAllocator);
   }
 }

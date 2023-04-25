@@ -4,6 +4,11 @@
  */
 package submit.ast;
 
+import submit.MIPSResult;
+import submit.RegisterAllocator;
+import submit.SymbolInfo;
+import submit.SymbolTable;
+
 /**
  *
  * @author edwajohn
@@ -40,5 +45,22 @@ public class If extends AbstractNode implements Statement {
       }
     }
 //    builder.append(prefix).append("}");
+  }
+
+  @Override
+  public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
+    MIPSResult exprMips = expression.toMIPS(code, data, symbolTable, regAllocator);
+    String branchlabel = symbolTable.generateDataLabel();
+    String postElseLabel = symbolTable.generateDataLabel();
+    code.append(String.format("beq %s $zero %s\n", exprMips.getRegister(), branchlabel));
+    trueStatement.toMIPS(code, data, symbolTable, regAllocator);
+    code.append(String.format("j %s\n", postElseLabel));
+    code.append(String.format("%s:\n", branchlabel)); // branch label to else
+    if (falseStatement != null) {
+      falseStatement.toMIPS(code, data, symbolTable, regAllocator);
+    }
+    code.append(String.format("%s:\n", postElseLabel)); // branch label to else
+    regAllocator.clear(exprMips.getRegister());
+    return MIPSResult.createVoidResult();
   }
 }
