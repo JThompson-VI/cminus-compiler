@@ -27,6 +27,23 @@ void main() {
 
 Check the data directory `test10.asm` to see the compiler output for this program.
 
+Here is an example of calling a function in place of a function parameter:
+```c 
+int add(int x, int y) {
+  return x+y;
+}
+
+int add2(int x, int y) {
+  return add(add(x,y),1);
+}
+
+void main() {
+  println("This program prints 7");
+  println(add2(2, 4));
+}
+
+```
+
 ### grammar generation
 
 This compiler uses ANTLR to generate the lexical analyzer and parser.
